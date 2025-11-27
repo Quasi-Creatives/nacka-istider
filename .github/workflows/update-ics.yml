@@ -22,16 +22,20 @@ jobs:
       - name: Kör scriptet som genererar istider.ics
         run: python istider.py
 
-      - name: Commit & push om filen ändrats
+     - name: Commit & push istider.ics om något ändrats
         run: |
-          if git diff --quiet istider.ics; then
-            echo "Inga ändringar i istider.ics"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Lägg till filen (även om den är ny)
+          git add istider.ics
+
+          # Kolla om det finns något att committa
+          if git diff --cached --quiet; then
+            echo "Inga ändringar att committa"
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add istider.ics
           git commit -m "Uppdatera istider.ics via GitHub Actions"
           git push
         env:
